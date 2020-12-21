@@ -1,0 +1,19 @@
+---
+- name: Pull privatebin image
+  docker_image:
+    name: "{{ privatebin_container_image }}:{{ privatebin_container_tag }}"
+    source: pull
+
+- name: Start privatebin Docker Container
+  docker_container:
+    name: "{{ privatebin_container_name }}"
+    image: "{{ privatebin_container_image }}:{{ privatebin_container_tag }}"
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - " {{privatebin_folder }}:/srv/data:rw"
+    read_only: true
+    networks_cli_compatible: yes
+    restart_policy: "unless-stopped"
+    state: started
+    restart: yes

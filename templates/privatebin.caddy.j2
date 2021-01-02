@@ -1,0 +1,61 @@
+####################################
+# This file is managed by ansible
+####################################
+
+{{ privatebin_caddy.privatebin_caddy_fqdn }} {
+{% if privatebin_caddy.privatebin_caddy_log is defined and privatebin_caddy.privatebin_caddy_log != "" %}
+  {{ privatebin_caddy.privatebin_caddy_log }}
+{% else -%}
+  log {
+        output discard
+  }
+{% endif %}
+
+{% if privatebin_caddy.privatebin_caddy_tls is defined and privatebin_caddy.privatebin_caddy_tls != "" %}
+  tls {{ privatebin_caddy.privatebin_caddy_tls }}
+{% endif %}
+
+{% if privatebin_caddy.privatebin_caddy_header is defined and privatebin_caddy.privatebin_caddy_header != "" %}
+  header {
+    {{ privatebin_caddy.privatebin_caddy_header }}
+  }
+{% else -%}
+  header {
+        # Enable HTTP Strict Transport Security (HSTS) to force clients to always connect via HTTPS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+        # Enable cross-site filter (XSS) and tell browser to block detected attacks
+        X-XSS-Protection "1; mode=block"
+
+        # Prevent some browsers from MIME-sniffing a response away from the declared Content-Type
+        X-Content-Type-Options "nosniff"
+
+        # Disallow the site to be rendered within a frame (clickjacking protection)
+        X-Frame-Options "SAMEORIGIN"
+
+        # Disable some features
+        Feature-Policy "accelerometer 'none';ambient-light-sensor 'none'; autoplay 'none';camera 'none';encrypted-media 'none';focus-without-user-activation 'none'; geolocation 'none';gyroscope 'none';magnetometer 'none';microphone 'none';midi 'none';payment 'none';picture-in-picture 'none'; speaker 'none';sync-xhr 'none';usb 'none';vr 'none'"
+
+        # Referer
+        Referrer-Policy "no-referrer"
+
+        # X-Robots-Tag
+        X-Robots-Tag "none"
+
+        # Remove Server header
+        -Server
+  }
+{% endif %}
+
+  handle {
+        encode zstd gzip
+
+        reverse_proxy {{ privatebin_container_listen_ip }}:{{ privatebin_container_ports }} {
+               header_up X-Forwarded-Port {http.request.port}
+               header_up X-Forwarded-Proto {http.request.scheme}
+               header_up X-Forwarded-TlsProto {tls_protocol}
+               header_up X-Forwarded-TlsCipher {tls_cipher}
+               header_up X-Forwarded-HttpsProto {proto}
+        }
+  }
+}

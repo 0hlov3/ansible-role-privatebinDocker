@@ -9,7 +9,7 @@
     name: "{{ privatebin_container_name }}"
     image: "{{ privatebin_container_image }}:{{ privatebin_container_tag }}"
     ports:
-      - "127.0.0.1:8080:8080"
+      - "{{ privatebin_container_listen_ip }}:{{ privatebin_container_ports }}:8080"
     volumes:
       - "{{ privatebin_folder }}:/srv/data:rw"
     read_only: true

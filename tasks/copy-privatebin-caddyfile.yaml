@@ -1,0 +1,7 @@
+---
+- name: Copy privatebin caddyfile
+  template:
+      dest: "{{ privatebin_caddyfile_path }}/privatebin.caddy"
+      src: privatebin.caddy.j2
+  when: (privatebin_caddyfile_path is defined) and (privatebin_caddyfile_path|length > 0)
+...

@@ -2,3 +2,10 @@ privatebin_container_name: "privatebin"
 privatebin_container_image: "privatebin/nginx-fpm-alpine"
 privatebin_container_tag: "1.3.1"
 privatebin_folder: "/docker/privatebin/data"
+privatebin_container_listen_ip: "127.0.0.1"
+privatebin_container_ports: "8080"
+
+privatebin_caddyfile_path: "/docker/caddy/caddyfiles/"
+privatebin_caddy:
+  privatebin_caddy_fqdn: ""
+  privatebin_caddy_tls: ""

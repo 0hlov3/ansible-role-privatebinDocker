@@ -1,3 +1,5 @@
 ---
-- include_tasks: create-privatebin-folders.yml
-- include_tasks: start-privatebin.yml
+- include_tasks: copy-privatebin-caddyfile.yaml
+- include_tasks: create-privatebin-folders.yaml
+- include_tasks: start-privatebin.yaml
+...

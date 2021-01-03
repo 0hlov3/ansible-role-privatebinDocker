@@ -1,3 +1,4 @@
+---
 - name: Create directory for privatebin
   file:
     path: "{{ privatebin_folder }}"
@@ -6,3 +7,4 @@
     owner: "65534"
     group: "82"
     mode: '0755'
+...
